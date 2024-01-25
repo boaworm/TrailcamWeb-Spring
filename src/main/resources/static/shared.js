@@ -49,6 +49,12 @@ function numericToTextMonth(month){
 	return monthArray[ month -1 ];
 }
 
+function calculateMinMaxDateRange(OLDEST_NEWEST_DATE){
+    var oD = new Date(OLDEST_NEWEST_DATE.oldestDate);
+    var nD = new Date(OLDEST_NEWEST_DATE.newestDate);
+    return [oD,nD];
+}
+/*
 function calculateMinMaxDateRange(DATA){
 	var oD = new Date();
 	var nD = new Date();
@@ -64,6 +70,7 @@ function calculateMinMaxDateRange(DATA){
     });
 	return [oD, nD];
 }
+*/
 
 
 

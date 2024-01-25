@@ -21,12 +21,12 @@ dependencies {
 	implementation (
 			'org.springframework.boot:spring-boot-starter-web',
 			'com.google.code.gson:gson',
-			'joda-time:joda-time'
+			'joda-time:joda-time:2.12.6'
 	)
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',
 			'com.google.code.gson:gson',
-			'joda-time:joda-time'
+			'joda-time:joda-time:2.12.6'
 	)
 }
 

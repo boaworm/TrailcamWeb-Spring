@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,9 +46,30 @@ public class TrailcamWsApplication {
 		LocalDate oldestDate = LocalDate.now();
 		LocalDate newestDate = LocalDate.now();
 
-		return null;
+		for(int i = 0; i< m_oklahomaObservations.size(); i++){
+			JsonObject obj = m_oklahomaObservations.get(i).getAsJsonObject();
+			int year = obj.get("year").getAsInt();
+			int month = obj.get("month").getAsInt();
+			int day = obj.get("day").getAsInt();
+			LocalDate tmpDate = new LocalDate(year, month, day);
+			if(tmpDate.compareTo(oldestDate) < 0){
+				oldestDate = tmpDate;
+			}
+			if(tmpDate.compareTo(newestDate) > 0){
+				newestDate = tmpDate;
+			}
+		}
+
+		System.out.println("Oldest date found is: " + oldestDate);
+		System.out.println("Newest date found is: " + newestDate);
+
+		JsonObject returnedObject = new JsonObject();
+		returnedObject.addProperty("oldestDate", oldestDate.toString());
+		returnedObject.addProperty("newestDate", newestDate.toString());
+		return returnedObject.toString();
 	}
 
+	@CrossOrigin(origins = "*")
 	@GetMapping("/getDataFile")
 	public String getDataFile(@RequestParam(value = "name") String fileName) {
 		switch (fileName){

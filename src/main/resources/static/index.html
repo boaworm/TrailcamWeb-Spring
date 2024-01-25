@@ -11,9 +11,6 @@
 
     <script>
 
-		var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
-		var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
-
         APP = Vue.createApp({
             props: {},
             data: function() {
@@ -31,7 +28,11 @@
             },
             computed: {},
             mounted: function() {
-				const arr = calculateMinMaxDateRange(DATA);
+  				var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
+				var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
+				var OLDEST_NEWEST_DATE = JSON.parse(Get("http://localhost:8080/getFirstAndLastDate"));
+
+				const arr = calculateMinMaxDateRange(OLDEST_NEWEST_DATE);
 				this.minDateStr = formatDate(arr[0]);
 				this.maxDateStr = formatDate(arr[1]);
 
