@@ -1,6 +1,7 @@
 package se.thorburn.trailcam;
 
 import com.google.gson.*;
+import org.joda.time.LocalDate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -38,6 +38,14 @@ public class TrailcamWsApplication {
 	@GetMapping("/hello")
 	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
 		return String.format("Hello %s!", name);
+	}
+
+	@GetMapping("getFirstAndLastDate")
+	public String getFirstAndLastDate(){
+		LocalDate oldestDate = LocalDate.now();
+		LocalDate newestDate = LocalDate.now();
+
+		return null;
 	}
 
 	@GetMapping("/getDataFile")
@@ -78,13 +86,11 @@ public class TrailcamWsApplication {
 			URL url = new URL(sourceUrl);
 			URLConnection request = url.openConnection();
 			request.connect();
-			JsonParser jp = new JsonParser();
-			JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+			JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
 
 			if(root.isJsonArray()){
 				return root.getAsJsonArray();
 			}else if(root.isJsonObject()){
-				// We have a root object
 				System.out.println("Unsupported type: JsonObject (only support arrays for now)");
 			}else{
 				System.out.println("Unclear what we have...");

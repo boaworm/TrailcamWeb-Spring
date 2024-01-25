@@ -17,17 +17,17 @@ repositories {
 }
 
 dependencies {
-	// compile ('com.google.code.gson:gson')
 
 	implementation (
 			'org.springframework.boot:spring-boot-starter-web',
-			'com.google.code.gson:gson'
+			'com.google.code.gson:gson',
+			'joda-time:joda-time'
 	)
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',
-		'com.google.code.gson:gson'
+			'com.google.code.gson:gson',
+			'joda-time:joda-time'
 	)
-
 }
 
 tasks.named('test') {

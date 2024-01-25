@@ -29,22 +29,7 @@
                     renderGraphs();
                 }
             },
-            computed: {
-				/*
-                q1 : function(){
-                    return ["obsPerHourJanuary","obsPerHourFebruary","obsPerHourMarch"];
-                },
-                q2 : function(){
-                    return ["obsPerHourApril","obsPerHourMay","obsPerHourJune"];
-                },
-                q3 : function(){
-                    return ["obsPerHourJuly","obsPerHourAugust","obsPerHourSeptember"];
-                },
-                q4 : function(){
-                    return ["obsPerHourOctober","obsPerHourNovember","obsPerHourDecember"];
-                }
-				*/
-            },
+            computed: {},
             mounted: function() {
 				const arr = calculateMinMaxDateRange(DATA);
 				this.minDateStr = formatDate(arr[0]);
