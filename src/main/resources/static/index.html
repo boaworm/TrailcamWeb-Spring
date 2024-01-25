@@ -3,18 +3,17 @@
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="wildlife.css">
-	<title>Trailcam visualization (using Spring and REST services)</title>
+	<title>[Spring+REST] Trailcam visualization</title>
 
 	<script src="d3.v7.js"></script>
 	<script src="shared.js"></script>
-	<script src="oklahoma_observations.json.js"></script>
-	<script src="deer_observations.json.js"></script>
-	<!--
-	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-	-->
 	<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
     <script>
+
+		var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
+		var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
+
         APP = Vue.createApp({
             props: {},
             data: function() {
@@ -127,7 +126,7 @@
 		</tr>
 
 		<tr>
-		<td><a href="camera.html"><div class="graphLink" id="deerObsPerHourTopCamera"></div></td>
+		<td><a href="camera.html"><div class="graphLink" id="deerObsPerHourTopCamera"></div></a></td>
 		<td><a href="camera.html"><div class="graphLink" id="deerObsPerHourMiddleCamera"></div></a></td>
 		<td><a href="camera.html"><div class="graphLink" id="deerObsPerHourHouseCamera"></div></a></td>
 		</tr>
@@ -520,6 +519,6 @@ function renderGraphs(){
 <script>
 	APP.mount('#cameraApp');
 </script>
-
+</div>
 </body>
 </html>

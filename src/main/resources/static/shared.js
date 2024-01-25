@@ -5,6 +5,13 @@ Date.prototype.getWeek = function() {
   return Math.ceil(dayOfYear/7)
 };
 
+function Get(yourUrl){
+			var Httpreq = new XMLHttpRequest(); // a new request
+			Httpreq.open("GET",yourUrl,false);
+			Httpreq.send(null);
+			return Httpreq.responseText;
+		}
+
 function formatDate(date){
 	try {
 		const y = date.getFullYear();

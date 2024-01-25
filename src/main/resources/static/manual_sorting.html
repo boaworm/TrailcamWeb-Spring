@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Data on manually sorted images (not ML)</title>
+
+	<script src="d3.v7.js"></script>
+	<script src="shared.js"></script>
+	<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+	<script>
+		var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
+		var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
+		var MANUALLY_SORTED_CATEGORIES = JSON.parse(Get("http://localhost:8080/getDataFile?name=manuallySortedClasses"));
+
+		APP = Vue.createApp({
+			props: {},
+			data: function() {
+				return {
+					// selectedCamera : "TOP",
+				};
+			},
+			methods: {
+				/*
+				cameraUpdate : function(){
+					renderGraphs(this.selectedCamera);
+				}
+				*/
+			},
+			computed: { },
+			mounted: function() {
+				renderGraphs();
+				// renderGraphs(this.selectedCamera);
+			}
+		});
+	</script>
+
+</head>
+
+<body>
+<div id="cameraApp">
+
+<table>
+	<!--
+	<tr>
+		<td><a href="index.html">View by manually sorted images</a></td>
+		<td></td>
+		<td></td>
+	</tr>
+	-->
+		<!--
+	<tr>
+		<td>
+		Select a camera: <select @change="cameraUpdate()" class="form-control" v-model="selectedCamera">
+			<option value="TOP">TOP</option>
+			<option value="MIDDLE">MIDDLE</option>
+			<option value="HOUSE">HOUSE</option>
+		</select>
+		</td>
+		<td></td>
+		<td></td>
+	</tr>
+		-->
+	<tr>
+		<td> <a href="index.html">Back</a></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><div id="obsPerAnimal"></div></td>
+		<td><div class="divTableCell" id="obsPerMonth"></div></td>
+		<td><div class="divTableCell" id="obsPerHour"></div></td>
+	</tr>
+</table>
+</div>
+
+<!-- Script code -->
+
+
+<script>
+///////// BEGIN MAIN DATA PROCESSING ////////////
+// Extract what years the code is active:
+
+function renderGraphs(){
+
+	/*
+	const yearArray = DATA.reduce(function (a, d) {
+		   if (a.indexOf(d.year) === -1) {
+			 a.push(d.year);
+		   }
+		   return a;
+		}, []);
+	yearArray.sort();
+	*/
+	// GLOBALS
+
+	const obsPerAnimalObject = [];
+
+	MANUALLY_SORTED_CATEGORIES.forEach((category) => {
+		const obs = {};
+		obs["category"] = category.category;
+		obs["count"] = category.count;
+		obsPerAnimalObject.push(obs);
+	});
+
+	// #### Start rendering data into graphs ####
+	createHBarGraph("#obsPerAnimal", "Total images per category", obsPerAnimalObject, "category", "count");
+}
+</script>
+
+<script>
+	APP.mount('#cameraApp');
+</script>
+
+</body>
+
+</html>
