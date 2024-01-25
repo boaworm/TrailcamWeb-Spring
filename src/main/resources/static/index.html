@@ -10,6 +10,11 @@
 	<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
     <script>
+		var DATA;
+		var DEER_OBS_DATA;
+		var OLDEST_NEWEST_DATE;
+		var oldestDate;
+		var newestDate;
 
         APP = Vue.createApp({
             props: {},
@@ -28,9 +33,9 @@
             },
             computed: {},
             mounted: function() {
-  				var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
-				var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
-				var OLDEST_NEWEST_DATE = JSON.parse(Get("http://localhost:8080/getFirstAndLastDate"));
+  				DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
+				DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
+				OLDEST_NEWEST_DATE = JSON.parse(Get("http://localhost:8080/getFirstAndLastDate"));
 
 				const arr = calculateMinMaxDateRange(OLDEST_NEWEST_DATE);
 				this.minDateStr = formatDate(arr[0]);
@@ -39,6 +44,9 @@
 				// set JS Globals
 				dateRangeFrom = new Date(this.minDateStr);
 				dateRangeTo = new Date(this.maxDateStr);
+
+				oldestDate = dateRangeFrom;
+				newestDate = dateRangeTo;
 
 				// initial render
 				renderGraphs();
@@ -121,12 +129,6 @@
 <script>
 
 ///////// BEGIN MAIN DATA PROCESSING ////////////
-
-let oldestDate = new Date();
-let newestDate = new Date();
-const arr = calculateMinMaxDateRange(DATA);
-oldestDate = arr[0];
-newestDate = arr[1];
 
 function renderGraphs(){
 
