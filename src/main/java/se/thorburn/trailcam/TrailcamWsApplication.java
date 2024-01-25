@@ -69,7 +69,7 @@ public class TrailcamWsApplication {
 	}
 
 	private JsonArray refreshSingleDataFile(String sourceUrl){
-		System.out.println("Loading data files...");
+		System.out.println("Loading data file from [" + sourceUrl + "]");
 		try {
 			URL url = new URL(sourceUrl);
 			URLConnection request = url.openConnection();
@@ -78,22 +78,13 @@ public class TrailcamWsApplication {
 			JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
 
 			if(root.isJsonArray()){
-				// We have an array
-				JsonArray jsonArray = root.getAsJsonArray();
-				/*
-				JsonObject jsonObject = jsonArray.get(0).getAsJsonObject();
-				String camera = jsonObject.get("camera").getAsString();
-				System.out.println("Camera = " + camera);
-				*/
-				return jsonArray;
+				return root.getAsJsonArray();
 			}else if(root.isJsonObject()){
 				// We have a root object
 				System.out.println("Unsupported type: JsonObject (only support arrays for now)");
 			}else{
 				System.out.println("Unclear what we have...");
 			}
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
