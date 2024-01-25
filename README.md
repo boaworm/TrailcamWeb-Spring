@@ -8,7 +8,7 @@ Frontend remains a Vue/JavaScript solution, but as a PoC, I changed the backend.
 
 This has changed the architecture to a typical microservices architecture, where data is served a-la-carte and on-demand to the web frontend.
 
-This has the potential of introducing propriatory filtering, transformations into the backend services and not sharing all data/observations with the clients. It also helps once the data grows to a much larger data set, where each graph can be provided only the data needed to render the graph.
+This has the potential of introducing proprietary filtering, transformations into the backend services and not sharing all data/observations with the clients. It also helps once the data grows to a much larger data set, where each graph can be provided only the data needed to render the graph.
 
 To test this code out, all you need to do is:
 
