@@ -7,10 +7,11 @@
 	<script src="d3.v7.js"></script>
 	<script src="shared.js"></script>
 	<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+	<script src="locals.js"></script>
 
 	<script>
-		var DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=oklahomaObservations"));
-		var DEER_OBS_DATA = JSON.parse(Get("http://localhost:8080/getDataFile?name=deerObservations"));
+		var DATA;
+		var DEER_OBS_DATA;
 
 		APP = Vue.createApp({
 			props: {},
@@ -39,6 +40,9 @@
 				}
 			},
 			mounted: function() {
+				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=oklahomaObservations"));
+				DEER_OBS_DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=deerObservations"));
+
 				renderGraphs(this.selectedCamera);
 			}
 		});
