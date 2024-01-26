@@ -21,5 +21,5 @@ To test this code out, all you need to do is:
 Point your browser to port 8080 of whatever machine you are running this on, and you are up!
 
 > [!NOTE]
-> I've only ported a small amount of function to use the REST services - this is more a PoC using Spring Boot than a full rewrite. 
+> I've only ported a small amount of function to use the REST services - this is more a PoC using Spring Boot than a full rewrite. It lacks any meaningful error handling, only representing a happy-path project.
 > 
