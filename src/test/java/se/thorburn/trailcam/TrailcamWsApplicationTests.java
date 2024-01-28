@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(classes = TrailcamWsApplication.class)
@@ -37,6 +38,8 @@ class TrailcamWsApplicationTests {
 	private JsonElement deerObservationsElement;
 	@Mock
 	private JsonElement manuallySortedObservationsElement;
+	@Mock
+	private JsonElement manuallyClassifiedObservationsElement;
 
 	@BeforeEach
 	public void setupMock() throws IOException {
@@ -65,12 +68,17 @@ class TrailcamWsApplicationTests {
 				StandardCharsets.UTF_8);
 		manuallySortedObservationsElement = JsonParser.parseString(manuallySortedObservations);
 
+		String manuallyClassifiedObservations = IOUtils.toString(
+				this.getClass().getClassLoader().getResourceAsStream("static/manually_classified.json"),
+				StandardCharsets.UTF_8);
+		manuallyClassifiedObservationsElement = JsonParser.parseString(manuallyClassifiedObservations);
+
 		// Mock dataservice response
 		Mockito.lenient().when(mockedDataService.get("timeSeries")).thenReturn(timeSeriesJsonElement);
 		Mockito.lenient().when(mockedDataService.get("animalObservations")).thenReturn(animalObservationsElement);
 		Mockito.lenient().when(mockedDataService.get("deerObservations")).thenReturn(deerObservationsElement);
 		Mockito.lenient().when(mockedDataService.get("manuallySortedObservations")).thenReturn(manuallySortedObservationsElement);
-
+		Mockito.lenient().when(mockedDataService.get("manuallyClassifiedObservations")).thenReturn(manuallyClassifiedObservationsElement);
 	}
 
 	@AfterEach
@@ -112,6 +120,13 @@ class TrailcamWsApplicationTests {
 		assertTrue(deerObs.startsWith("[{\"image\":\"TOP_2023-12-07"));
 	}
 
+	@Test
+	void verify_manualClassification(){
+		String manualClassification = m_trailcamApplication.getDataFile("manuallyClassifiedObservations");
+		assertThat(manualClassification, notNullValue());
+		assertTrue(manualClassification.startsWith("[{\"confidence\":1.0,\"image\":\"HOUSE"));
+	}
+
 
 	@Test
 	void verify_oldestNewestDate(){
@@ -120,12 +135,27 @@ class TrailcamWsApplicationTests {
 		JsonElement el = JsonParser.parseString(firstAndLastDate);
 		assertThat(el, notNullValue());
 		assertThat(((JsonObject) el).asMap().get("oldestDate").getAsString(), equalTo("2023-12-02"));
-		assertThat(((JsonObject) el).asMap().get("newestDate").getAsString(), equalTo("2024-01-27"));
+		assertThat(((JsonObject) el).asMap().get("newestDate").getAsString(), equalTo("2024-01-23"));
 	}
 
 	@Test
 	void verify_yearArray(){
 		String yearArray = m_trailcamApplication.getSortedListOfYears();
 		assertThat(yearArray, equalTo("[2023,2024]"));
+	}
+
+	@Test
+	void verify_mlVsManual(){
+		String deerObs = m_trailcamApplication.getDataFile("deerObservations");
+		String manualObs = m_trailcamApplication.getDataFile("manuallyClassifiedObservations");
+
+		assertThat(deerObs, notNullValue());
+		assertThat(manualObs, notNullValue());
+
+		String comparisonString = m_trailcamApplication.getMLvsManualComparison();
+		assertThat(comparisonString, notNullValue());
+		assertThat(comparisonString, equalTo("[{\"correctness\":\"Correct\",\"theGroup\":\"TruePositive\",\"observations\":816},{\"correctness\":\"Correct\",\"theGroup\":\"TrueNegative\",\"observations\":187},{\"correctness\":\"Correct\",\"theGroup\":\"FalsePositive\",\"observations\":0},{\"correctness\":\"Correct\",\"theGroup\":\"FalseNegative\",\"observations\":0},{\"correctness\":\"Incorrect\",\"theGroup\":\"TruePositive\",\"observations\":0},{\"correctness\":\"Incorrect\",\"theGroup\":\"TrueNegative\",\"observations\":0},{\"correctness\":\"Incorrect\",\"theGroup\":\"FalsePositive\",\"observations\":220},{\"correctness\":\"Incorrect\",\"theGroup\":\"FalseNegative\",\"observations\":8}]"));
+
+
 	}
 }

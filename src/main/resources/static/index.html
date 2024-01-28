@@ -108,6 +108,11 @@
 			<td colspan="3"><div id="dayByDayDeerObs"></div> </td>
 		</tr>
 		<tr>
+			<td><div id="deerMLAccuracy"></div></td>
+			<td><div id="x"></div></td>
+			<td><div id="x"></div></td>
+		</tr>
+		<tr>
 			<td colspan="3"><div id="weekByWeekObs"></div> </td>
 		</tr>
 		<tr>
@@ -466,6 +471,11 @@ function renderGraphs(){
 	getDeerObsPerHour("MIDDLE", deerObsPerHourMiddleCameraObject);
 	getDeerObsPerHour("HOUSE", deerObsPerHourHouseCameraObject);
 
+	// Calculate ML accuracy
+	var deerMLAccuracyObject = JSON.parse(Get(BACKEND_URL + "/getMLvsManualComparison"));
+
+
+
 	// #### Start rendering data into graphs ####
 
 	// Generate yearly observations
@@ -478,11 +488,11 @@ function renderGraphs(){
 	createStackedHBarGraph("#obsPerHourStackedCamera", "Hourly observations - by camera", obsPerHourStackedCameraObject, "hour", "camera", "observations");
 
 	for(let i=0; i<12; i++){
-		// console.log(monthArray[i]);
 		const myDiv = "#obsPerHour" + monthArray[i];
-		createHBarGraph(myDiv, "Anmals observed per hour, in " + monthArray[i], monthlyHourObsObject[i], "hour", "observations");
+		createHBarGraph(myDiv, "Animals observed per hour, in " + monthArray[i], monthlyHourObsObject[i], "hour", "observations");
 	}
 
+	createStackedHBarGraph("#deerMLAccuracy", "Classification accuracy - Apple ML standalone", deerMLAccuracyObject, "correctness", "theGroup", "observations", 1, 1);
 
 	createHBarGraph("#dayByDayObs", "Total animal observations per day", dayByDayObsObject, "day", "observations", 3, 1);
 	var title = "Total deer observations per day (with " + (100*deerConfidenceThreshold) + "% confidence)";

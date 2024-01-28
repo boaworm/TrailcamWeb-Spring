@@ -54,23 +54,6 @@ function calculateMinMaxDateRange(OLDEST_NEWEST_DATE){
     var nD = new Date(OLDEST_NEWEST_DATE.newestDate);
     return [oD,nD];
 }
-/*
-function calculateMinMaxDateRange(DATA){
-	var oD = new Date();
-	var nD = new Date();
-    // First and last day in the dataset
-    DATA.forEach((image) => {
-        const tmpDate = new Date(image.year, (image.month-1), image.day);
-        if(tmpDate < oD){
-			oD = new Date(tmpDate);
-        }
-        if(tmpDate > nD){
-			nD = new Date(tmpDate);
-        }
-    });
-	return [oD, nD];
-}
-*/
 
 
 
@@ -87,7 +70,8 @@ function createStackedHBarGraph(divName, title, dataObject, barLabel, groupLabel
 	width = (460*widthScale) - margin.left - margin.right,
 	height = (400*heightScale) - margin.top - margin.bottom;
 	// expect obj { barLabel: ... , groupLabel: ... , valueLabel: ... } 
-	// for ex	{ year: 2010, camera: "TOP", observations: 100 }
+	// for ex	{ year: 2010, camera: "TOP", observations: 100 },
+	//      	{ year: 2010, camera: "MIDDLE", observations: 200 }
 
 	// figure out X labels, and combined max X label (for Y scale)
 	var distinctBarLabels = [];
@@ -156,7 +140,7 @@ function createStackedHBarGraph(divName, title, dataObject, barLabel, groupLabel
 
 	var stackedData = d3.stack()
 		.keys(d3.union(dataObject.map(d => d[groupLabel])))
-		.value(([,group], key) => group.get(key).observations)
+		.value(([,group], key) => group.get(key)[valueLabel] )
 		(d3.index(dataObject, d => d[barLabel], d => d[groupLabel]));
 
 	// Show the bars
