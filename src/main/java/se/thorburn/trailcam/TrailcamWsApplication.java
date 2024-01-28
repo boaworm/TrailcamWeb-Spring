@@ -1,6 +1,7 @@
 package se.thorburn.trailcam;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.joda.time.LocalDate;
@@ -10,12 +11,17 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 @RestController
@@ -64,6 +70,20 @@ public class TrailcamWsApplication {
 		returnedObject.addProperty("oldestDate", oldestDate.toString());
 		returnedObject.addProperty("newestDate", newestDate.toString());
 		return returnedObject.toString();
+	}
+
+	@GetMapping("getSortedListOfYears")
+	public String getSortedListOfYears() {
+		Set<String> yearSet = new HashSet<String>();
+		JsonArray observations = dataService.get("animalObservations").getAsJsonArray();
+		for(int i = 0; i < observations.size(); i++){
+			JsonObject asJsonObject = observations.get(i).getAsJsonObject();
+			String year = asJsonObject.get("year").getAsString();
+			yearSet.add(year);
+		}
+		ArrayList<String> arrayList = new ArrayList<String>(yearSet);
+		Collections.sort(arrayList);
+		return "[" + String.join(",",arrayList) + "]";
 	}
 
 	@CrossOrigin(origins = "*")

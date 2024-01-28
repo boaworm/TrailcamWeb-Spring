@@ -134,13 +134,11 @@
 function renderGraphs(){
 
 	// Extract what years the code is active:
-	const yearArray = DATA.reduce(function (a, d) {
-		if (a.indexOf(d.year) === -1) {
-			a.push(d.year);
-		}
-		return a;
-	}, []);
-	yearArray.sort();
+	var yearArray = [];
+	let arr = JSON.parse(Get(BACKEND_URL + "/getSortedListOfYears"));
+	arr.forEach( (year) => {
+		yearArray.push(year.toString());
+	});
 
 	// GLOBALS
 	const yearObsObject = [];

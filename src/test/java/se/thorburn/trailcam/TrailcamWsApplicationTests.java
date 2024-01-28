@@ -123,4 +123,9 @@ class TrailcamWsApplicationTests {
 		assertThat(((JsonObject) el).asMap().get("newestDate").getAsString(), equalTo("2024-01-27"));
 	}
 
+	@Test
+	void verify_yearArray(){
+		String yearArray = m_trailcamApplication.getSortedListOfYears();
+		assertThat(yearArray, equalTo("[2023,2024]"));
+	}
 }
