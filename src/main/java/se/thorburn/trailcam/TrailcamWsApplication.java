@@ -1,7 +1,11 @@
 package se.thorburn.trailcam;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.joda.time.LocalDate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,33 +16,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 
 @SpringBootApplication
 @RestController
 public class TrailcamWsApplication {
 
-	private JsonArray m_oklahomaObservations = new JsonArray();
-	private JsonArray m_deerObservations = new JsonArray();
-	private JsonArray m_manuallySortedClasses = new JsonArray();
-	private JsonArray m_timeSeries = new JsonArray();
+	@Autowired()
+	@Qualifier("DataService")
+	private ObservationDataService dataService;
 
 	public TrailcamWsApplication(){
+	}
 
-		// refreshDataFiles();
-
+	public void setDataService(ObservationDataService service){
+		this.dataService = service;
 	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(TrailcamWsApplication.class, args);
-	}
-
-	@GetMapping("/hello")
-	public String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-		return String.format("Hello %s!", name);
 	}
 
 	@GetMapping("getFirstAndLastDate")
@@ -46,8 +41,13 @@ public class TrailcamWsApplication {
 		LocalDate oldestDate = LocalDate.now();
 		LocalDate newestDate = LocalDate.now();
 
-		for(int i = 0; i< m_oklahomaObservations.size(); i++){
-			JsonObject obj = m_oklahomaObservations.get(i).getAsJsonObject();
+		JsonElement observations = dataService.get("oklahomaObservations");
+		if(observations == null){
+			return "ERROR";
+		}
+
+		for(int i = 0; i< dataService.get("oklahomaObservations").getAsJsonArray().size(); i++){
+			JsonObject obj = dataService.get("oklahomaObservations").getAsJsonArray().get(i).getAsJsonObject();
 			int year = obj.get("year").getAsInt();
 			int month = obj.get("month").getAsInt();
 			int day = obj.get("day").getAsInt();
@@ -60,9 +60,6 @@ public class TrailcamWsApplication {
 			}
 		}
 
-		System.out.println("Oldest date found is: " + oldestDate);
-		System.out.println("Newest date found is: " + newestDate);
-
 		JsonObject returnedObject = new JsonObject();
 		returnedObject.addProperty("oldestDate", oldestDate.toString());
 		returnedObject.addProperty("newestDate", newestDate.toString());
@@ -72,55 +69,28 @@ public class TrailcamWsApplication {
 	@CrossOrigin(origins = "*")
 	@GetMapping("/getDataFile")
 	public String getDataFile(@RequestParam(value = "name") String fileName) {
-		switch (fileName){
-			case "oklahomaObservations" :
-				return new Gson().toJson(m_oklahomaObservations);
-			case "deerObservations" :
-				return new Gson().toJson(m_deerObservations);
-			case "manuallySortedClasses" :
-				return new Gson().toJson(m_manuallySortedClasses);
-			case "timeSeries":
-				return new Gson().toJson(m_timeSeries);
-			default:
-				return "Unsupported file: " + fileName;
+		JsonElement jsonElement = this.dataService.get(fileName);
+		if(jsonElement == null) {
+			System.out.println("Error: Attempting to retrieve unsupported data set : " + fileName);
+			return "ERROR";
+		}else{
+			return new Gson().toJson(jsonElement);
 		}
 	}
-
-
 
 	@EventListener(ApplicationReadyEvent.class)
 	@GetMapping("/refreshDataFiles")
 	public String refreshDataFiles() {
-		refreshData();
-		return "OK";
-	}
-
-	private void refreshData(){
-		m_oklahomaObservations = refreshSingleDataFile("https://www.thorburn.se/trailcam/oklahoma_observations.json");
-		m_deerObservations = refreshSingleDataFile("https://www.thorburn.se/trailcam/deer_observations.json");
-		m_manuallySortedClasses = refreshSingleDataFile("https://www.thorburn.se/trailcam/manually_sorted_categories.json");
-		m_timeSeries = refreshSingleDataFile("https://www.thorburn.se/trailcam/time_series_dimension.json");
-	}
-
-	private JsonArray refreshSingleDataFile(String sourceUrl){
-		System.out.println("Loading data file from [" + sourceUrl + "]");
+		System.out.println("Refreshing data files");
 		try {
-			URL url = new URL(sourceUrl);
-			URLConnection request = url.openConnection();
-			request.connect();
-			JsonElement root = new JsonParser().parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-
-			if(root.isJsonArray()){
-				return root.getAsJsonArray();
-			}else if(root.isJsonObject()){
-				System.out.println("Unsupported type: JsonObject (only support arrays for now)");
-			}else{
-				System.out.println("Unclear what we have...");
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+			dataService.load("oklahomaObservations", "https://www.thorburn.se/trailcam/oklahoma_observations.json");
+			dataService.load("deerObservations", "https://www.thorburn.se/trailcam/deer_observations.json");
+			dataService.load("manuallySortedObservations", "https://www.thorburn.se/trailcam/manually_sorted_categories.json");
+			dataService.load("timeSeries", "https://www.thorburn.se/trailcam/time_series_dimension.json");
+		}catch(IOException e){
+			System.out.println("Failed to refresh data: " + e);
 		}
-		return null;
+		return "Successfully refreshed data files";
 	}
 
 }

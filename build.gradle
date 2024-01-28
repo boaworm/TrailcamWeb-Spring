@@ -26,8 +26,11 @@ dependencies {
 	testImplementation(
 			'org.springframework.boot:spring-boot-starter-test',
 			'com.google.code.gson:gson',
-			'joda-time:joda-time:2.12.6'
+			'joda-time:joda-time:2.12.6',
+			'org.hamcrest:hamcrest:2.2',
+			'commons-io:commons-io:2.15.1'
 	)
+	testImplementation 'junit:junit:4.13.1'
 }
 
 tasks.named('test') {
