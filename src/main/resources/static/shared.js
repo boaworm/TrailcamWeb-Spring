@@ -196,7 +196,6 @@ function createStackedHBarGraph(divName, title, dataObject, barLabel, groupLabel
 			.attr("text-anchor", "left")
 			.style("alignment-baseline", "middle");
 
-
     svg.append("text")
 		.attr("x", (width / 2))
 		.attr("y", 0 - (margin.top / 2))
@@ -252,16 +251,17 @@ function createHBarGraph(divName, title, dataObject, leftKey, rightKey, widthSca
       .call(d3.axisLeft(y));
 
     // Bars
-
-    svg.selectAll("mybar")
-		.data(dataObject)
-		.enter()
-		.append("rect")
-			.attr("x", function(d) { return x(d[leftKey]); })
-			.attr("y", function(d) { return y(d[rightKey]); })
-			.attr("width", x.bandwidth())
-			.attr("height", function(d) { return height - y(d[rightKey]); })
-			.attr("fill", "#69b3a2");
+	if(maxObs > 0){	
+		svg.selectAll("mybar")
+			.data(dataObject)
+			.enter()
+			.append("rect")
+				.attr("x", function(d) { return x(d[leftKey]); })
+				.attr("y", function(d) { return y(d[rightKey]); })
+				.attr("width", x.bandwidth())
+				.attr("height", function(d) { return height - y(d[rightKey]); })
+				.attr("fill", "#69b3a2");
+	}
 
     svg.append("text")
 		.attr("x", (width / 2))
