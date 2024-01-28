@@ -40,7 +40,7 @@
 				}
 			},
 			mounted: function() {
-				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=oklahomaObservations"));
+				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=animalObservations"));
 				DEER_OBS_DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=deerObservations"));
 
 				renderGraphs(this.selectedCamera);

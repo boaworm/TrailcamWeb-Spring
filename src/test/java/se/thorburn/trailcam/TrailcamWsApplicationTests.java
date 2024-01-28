@@ -33,6 +33,10 @@ class TrailcamWsApplicationTests {
 	JsonElement timeSeriesJsonElement;
 	@Mock
 	private JsonElement animalObservationsElement;
+	@Mock
+	private JsonElement deerObservationsElement;
+	@Mock
+	private JsonElement manuallySortedObservationsElement;
 
 	@BeforeEach
 	public void setupMock() throws IOException {
@@ -51,9 +55,21 @@ class TrailcamWsApplicationTests {
 				StandardCharsets.UTF_8);
 		animalObservationsElement = JsonParser.parseString(animalObservations);
 
+		String deerObservations = IOUtils.toString(
+				this.getClass().getClassLoader().getResourceAsStream("static/deer_observations.json"),
+				StandardCharsets.UTF_8);
+		deerObservationsElement = JsonParser.parseString(deerObservations);
+
+		String manuallySortedObservations = IOUtils.toString(
+				this.getClass().getClassLoader().getResourceAsStream("static/manually_sorted_categories.json"),
+				StandardCharsets.UTF_8);
+		manuallySortedObservationsElement = JsonParser.parseString(manuallySortedObservations);
+
 		// Mock dataservice response
 		Mockito.lenient().when(mockedDataService.get("timeSeries")).thenReturn(timeSeriesJsonElement);
-		Mockito.lenient().when(mockedDataService.get("oklahomaObservations")).thenReturn(animalObservationsElement);
+		Mockito.lenient().when(mockedDataService.get("animalObservations")).thenReturn(animalObservationsElement);
+		Mockito.lenient().when(mockedDataService.get("deerObservations")).thenReturn(deerObservationsElement);
+		Mockito.lenient().when(mockedDataService.get("manuallySortedObservations")).thenReturn(manuallySortedObservationsElement);
 
 	}
 
@@ -74,6 +90,29 @@ class TrailcamWsApplicationTests {
 		assertThat(timeSeries, notNullValue());
 		assertTrue(timeSeries.startsWith("[{\"date\":\"2023-12-01\""));
 	}
+
+	@Test
+	void verify_manuallySortedObservations(){
+		String manualObs = m_trailcamApplication.getDataFile("manuallySortedObservations");
+		assertThat(manualObs, notNullValue());
+		assertTrue(manualObs.startsWith("[{\"category\":\"8.Cat\""));
+	}
+
+	@Test
+	void verify_animalObservations(){
+		String animalObs = m_trailcamApplication.getDataFile("animalObservations");
+		assertThat(animalObs, notNullValue());
+		assertTrue(animalObs.startsWith("[{\"date\":\"2023-12-07\""));
+	}
+
+	@Test
+	void verify_deerObservations(){
+		String deerObs = m_trailcamApplication.getDataFile("deerObservations");
+		assertThat(deerObs, notNullValue());
+		assertTrue(deerObs.startsWith("[{\"image\":\"TOP_2023-12-07"));
+	}
+
+
 	@Test
 	void verify_oldestNewestDate(){
 		String firstAndLastDate = m_trailcamApplication.getFirstAndLastDate();

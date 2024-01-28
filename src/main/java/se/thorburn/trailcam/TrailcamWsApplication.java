@@ -41,13 +41,13 @@ public class TrailcamWsApplication {
 		LocalDate oldestDate = LocalDate.now();
 		LocalDate newestDate = LocalDate.now();
 
-		JsonElement observations = dataService.get("oklahomaObservations");
+		JsonElement observations = dataService.get("animalObservations");
 		if(observations == null){
 			return "ERROR";
 		}
 
-		for(int i = 0; i< dataService.get("oklahomaObservations").getAsJsonArray().size(); i++){
-			JsonObject obj = dataService.get("oklahomaObservations").getAsJsonArray().get(i).getAsJsonObject();
+		for(int i = 0; i< dataService.get("animalObservations").getAsJsonArray().size(); i++){
+			JsonObject obj = dataService.get("animalObservations").getAsJsonArray().get(i).getAsJsonObject();
 			int year = obj.get("year").getAsInt();
 			int month = obj.get("month").getAsInt();
 			int day = obj.get("day").getAsInt();
@@ -83,7 +83,7 @@ public class TrailcamWsApplication {
 	public String refreshDataFiles() {
 		System.out.println("Refreshing data files");
 		try {
-			dataService.load("oklahomaObservations", "https://www.thorburn.se/trailcam/oklahoma_observations.json");
+			dataService.load("animalObservations", "https://www.thorburn.se/trailcam/oklahoma_observations.json");
 			dataService.load("deerObservations", "https://www.thorburn.se/trailcam/deer_observations.json");
 			dataService.load("manuallySortedObservations", "https://www.thorburn.se/trailcam/manually_sorted_categories.json");
 			dataService.load("timeSeries", "https://www.thorburn.se/trailcam/time_series_dimension.json");

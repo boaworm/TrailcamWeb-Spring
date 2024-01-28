@@ -34,7 +34,7 @@
             },
             computed: {},
             mounted: function() {
-  				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=oklahomaObservations"));
+  				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=animalObservations"));
 				DEER_OBS_DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=deerObservations"));
 				OLDEST_NEWEST_DATE = JSON.parse(Get(BACKEND_URL + "/getFirstAndLastDate"));
 
