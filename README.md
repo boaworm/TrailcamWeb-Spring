@@ -18,7 +18,7 @@ To test this code out, all you need to do is:
 >
 > ./gradlew bootRun
 >
-Point your browser to port 8080 of whatever machine you are running this on, and you are up!
+Point your browser to port 8080 of whatever machine you are running this on, and you are up! In live/run mode, the service will pull the latest data files from my web server.
 
 > [!NOTE]
 > There are a series of tests you can run as well. They use embedded data samples. This allows for easy TDD.
