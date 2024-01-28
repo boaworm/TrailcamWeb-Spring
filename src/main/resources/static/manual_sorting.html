@@ -34,7 +34,7 @@
   				DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=animalObservations"));
 				DEER_OBS_DATA = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=deerObservations"));
 				OLDEST_NEWEST_DATE = JSON.parse(Get(BACKEND_URL + "/getFirstAndLastDate"));
-				MANUALLY_SORTED_CATEGORIES = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=manuallySortedClasses"));
+				MANUALLY_SORTED_CATEGORIES = JSON.parse(Get(BACKEND_URL + "/getDataFile?name=manuallySortedObservations"));
 				renderGraphs();
 			}
 		});
@@ -46,26 +46,6 @@
 <div id="cameraApp">
 
 <table>
-	<!--
-	<tr>
-		<td><a href="index.html">View by manually sorted images</a></td>
-		<td></td>
-		<td></td>
-	</tr>
-	-->
-		<!--
-	<tr>
-		<td>
-		Select a camera: <select @change="cameraUpdate()" class="form-control" v-model="selectedCamera">
-			<option value="TOP">TOP</option>
-			<option value="MIDDLE">MIDDLE</option>
-			<option value="HOUSE">HOUSE</option>
-		</select>
-		</td>
-		<td></td>
-		<td></td>
-	</tr>
-		-->
 	<tr>
 		<td> <a href="index.html">Back</a></td>
 		<td></td>
@@ -87,16 +67,6 @@
 // Extract what years the code is active:
 
 function renderGraphs(){
-
-	/*
-	const yearArray = DATA.reduce(function (a, d) {
-		   if (a.indexOf(d.year) === -1) {
-			 a.push(d.year);
-		   }
-		   return a;
-		}, []);
-	yearArray.sort();
-	*/
 	// GLOBALS
 
 	const obsPerAnimalObject = [];
